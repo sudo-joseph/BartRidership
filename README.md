@@ -10,8 +10,8 @@ delta for all available ridership data.
 Bart provides various ridership data in .xlsx format. Data containing hourly
 trips between station pairs has been downloaded and is available in the data
 directory of this repo. Original data data can be found here:
- * [Bart Ridership Reports][https://www.bart.gov/about/reports/ridership]
- * [Hourly Ridership by Origin-Destination Pairs][http://64.111.127.166/origin-destination/]
+ * [Bart Ridership Reports](https://www.bart.gov/about/reports/ridership)
+ * [Hourly Ridership by Origin-Destination Pairs](http://64.111.127.166/origin-destination/)
 
 ## Data Visualization
 Data will be visualized with a Mirror Bar Chart to determine arrival and
