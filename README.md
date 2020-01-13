@@ -19,3 +19,10 @@ departure imbalance at each station. The x-axis of this chart will be the hour
 of the day, with the arrival and departure totals on the y-axis. Bars will be
 used allow for comparison of passengers arriving and leaving the chosen station
 hour by hour.
+
+## Color Profile
+
+* #0064a8 - Bart Blue
+* #006A8E - Pantone Blue
+* #B5BA05 - Pantone Green
+* #B5B5B5 - Grey
