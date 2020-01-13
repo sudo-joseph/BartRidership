@@ -1,0 +1,170 @@
+:root {
+  --main-color-1: #006A8E; /*Pantone Blue*/
+  --main-color-2: #B5BA05; /*Pantone Green*/
+  --secondary-color-1:#0064a8; /*Bart Blue*/
+  --secondary-color-2:#B5B5B5; /*Grey*/
+
+}
+
+.Page {
+  display: grid;
+  grid-template-columns: 0.25fr 1fr 0.25fr;
+  grid-template-rows: 0.25fr 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 10px;
+}
+
+.Header {
+  grid-area: 1 / 2;
+  text-align: center;
+  background-color: var(--main-color-1);
+  border: solid 5px var(--secondary-color-2);
+}
+
+.Content {
+  grid-area: 2 / 2;
+  border: solid 5px var(--secondary-color-2);
+  display: grid;
+  grid-template-columns: 0.05fr 1fr 0.05fr;
+  grid-template-rows: 0.25fr 1fr 0.25fr;
+  column-gap:1rem;
+  row-gap:1rem;
+  padding-top:1rem;
+}
+
+.Content-title {
+  grid-area: 1 / 2;
+  text-align: center;
+  background-color: var(--main-color-2);
+  border: solid 5px var(--secondary-color-2);
+}
+
+.Content-Dataview{
+  grid-area: 2 / 2;
+  /* border:solid 2px black; */
+  /* display:flex;
+  flex-direction: column; */
+  height:400px;
+}
+
+.Content-Dataview-Top {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  height: 200px;
+}
+
+.Content-Dataview-Bottom {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height:200px;
+  align-items: flex-start;
+}
+
+.Content-Dataview-Data-Box {
+  width:8.33%;
+  border: solid 2px black;
+  align-items: flex-end;
+  /* height:200px */
+}
+
+.Content-Dataview-Data-Box:nth-child(odd){
+  background-color: var(--main-color-1);
+}
+
+.Content-Dataview-Data-Box:nth-child(even){
+  background-color: var(--main-color-2);
+}
+.Content-Dataview-Top:nth-child(1){
+  height:0.4px;
+}
+
+.Content-Dataview-Top:nth-child(2){
+  height:0px;
+}
+
+.Content-Dataview-Top:nth-child(3){
+  height:0px;
+}
+
+.Content-Dataview-Top:nth-child(4){
+  height:0px;
+}
+
+.Content-Dataview-Top:nth-child(5){
+  height:0px;
+}
+
+.Content-Dataview-Top:nth-child(6){
+  height:0.2px;
+}
+.Content-Dataview-Top:nth-child(7){
+  height:0.9px;
+}
+.Content-Dataview-Top:nth-child(8){
+  height:2.3px;
+}
+.Content-Dataview-Top:nth-child(9){
+  height:3.9px;
+}
+.Content-Dataview-Top:nth-child(10){
+  height:2.9px;
+}
+.Content-Dataview-Top:nth-child(11){
+  height:1.8px;
+}
+.Content-Dataview-Top:nth-child(12){
+  height:2px;
+}
+.Content-Dataview-Top:nth-child(13){
+  height:2.9px;
+}
+.Content-Dataview-Top:nth-child(14){
+  height:3.8px;
+}
+.Content-Dataview-Top:nth-child(15){
+  height:6.7px;
+}
+.Content-Dataview-Top:nth-child(16){
+  height:12.7px;
+}
+.Content-Dataview-Top:nth-child(17){
+  height:27.7px;
+}
+.Content-Dataview-Top:nth-child(18){
+  height:50.8px;
+}
+.Content-Dataview-Top:nth-child(19){
+  height:45.8px;
+}
+.Content-Dataview-Top:nth-child(20){
+  height:19.5px;
+}
+.Content-Dataview-Top:nth-child(21){
+  height:7.9px;
+}
+.Content-Dataview-Top:nth-child(22){
+  height:3.7px;
+}
+.Content-Dataview-Top:nth-child(23){
+  height:2.8px;
+}
+.Content-Dataview-Top:nth-child(24){
+  height:1.5px;
+}
+
+/* .Content-Dataview-Top:nth-child(even): {
+   border: solid 2px black;
+   width:500px;
+   height:100px;
+   background-color: var(--main-color-1);
+}
+
+.Content-Dataview-Top:nth-child(odd): {
+  border: solid 2px black;
+  width:5px;
+  height:100px;
+  background-color: var(--main-color-2);
+} */
