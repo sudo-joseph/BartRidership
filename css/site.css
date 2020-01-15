@@ -12,10 +12,20 @@
 
 .Page {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 0.25fr 1fr 0.25fr;
   grid-template-rows: 0.25fr 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+  .Page {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: 0.25fr 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 10px;
+  }
 }
 
 .Header {
@@ -59,6 +69,12 @@
   align-items: flex-end;
   height: 200px;
   border-bottom: solid 1px black;
+  transition: background-color 1.2s;
+
+}
+
+.Content-Dataview-Top:hover {
+  background-color: lightgray;
 }
 
 .Content-Dataview-Bottom {
@@ -67,13 +83,19 @@
   flex-wrap: nowrap;
   height:200px;
   align-items: flex-start;
+  transition: background-color 1.2s;
 
+}
+
+.Content-Dataview-Bottom:hover {
+  background-color: lightgray;
 }
 
 .Content-Dataview-Data-Box {
   width:var(--column-width);
   align-items: flex-end;
   height:200px
+  transition:2s;
 }
 
 .Content-Dataview-Data-Box:nth-child(odd){
@@ -82,6 +104,10 @@
 
 .Content-Dataview-Data-Box:nth-child(even){
   background-color: var(--main-color-2);
+}
+
+.Content-Dataview-Data-Box:hover {
+  background-color: yellow;
 }
 
 .Content-Dataview-xAxis {
@@ -107,7 +133,9 @@
 .Content-Dataview-yAxis-Top {
   writing-mode: vertical-rl;
   text-orientation: mixed;
+  transition: all 3s;
 }
+
 .Content-Dataview-yAxis-Bottom {
   writing-mode: vertical-rl;
   text-orientation: mixed;
@@ -115,6 +143,8 @@
 .Content-Dataview-xLabel {
 text-align: center;
 }
+
+
 /* <div class="Content-Dataview-xAxis">
   <div class="Content-Dataview-xAxis-Box"> */
 
