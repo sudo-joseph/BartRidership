@@ -6,9 +6,13 @@
 
 }
 
+:root {
+  --column-width:8.33%;
+}
+
 .Page {
   display: grid;
-  grid-template-columns: 0.25fr 1fr 0.25fr;
+  grid-template-columns: auto 1fr auto;
   grid-template-rows: 0.25fr 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 10px;
@@ -25,22 +29,22 @@
   grid-area: 2 / 2;
   border: solid 5px var(--secondary-color-2);
   display: grid;
-  grid-template-columns: 0.05fr 1fr 0.05fr;
-  grid-template-rows: 0.25fr 1fr 0.25fr;
-  column-gap:1rem;
+  grid-template-columns: 0.05fr 0.05fr 1fr 0.1fr;
+  grid-template-rows: 0.2fr 1fr 0.25fr;
+  /* column-gap:1rem; */
   row-gap:1rem;
   padding-top:1rem;
 }
 
-.Content-title {
-  grid-area: 1 / 2;
+.Content-Title {
+  grid-area: 1 / 2 / 1 / 4;
   text-align: center;
   background-color: var(--main-color-2);
   border: solid 5px var(--secondary-color-2);
 }
 
-.Content-Dataview{
-  grid-area: 2 / 2;
+.Content-Dataview {
+  grid-area: 2 / 3 / 2 / 4;
   /* border:solid 2px black; */
   /* display:flex;
   flex-direction: column; */
@@ -67,7 +71,7 @@
 }
 
 .Content-Dataview-Data-Box {
-  width:8.33%;
+  width:var(--column-width);
   align-items: flex-end;
   height:200px
 }
@@ -80,6 +84,39 @@
   background-color: var(--main-color-2);
 }
 
+.Content-Dataview-xAxis {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height:20px;
+  align-items: flex-start;
+
+}
+
+.Content-Dataview-xAxis-Box {
+  width:calc(var(--column-width)/2);
+}
+
+.Content-Dataview-yAxis {
+  grid-area: 2 / 2;
+  display:flex;
+  flex-direction: column;
+  justify-content: space-evenly;;
+
+}
+.Content-Dataview-yAxis-Top {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+.Content-Dataview-yAxis-Bottom {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+.Content-Dataview-xLabel {
+text-align: center;
+}
+/* <div class="Content-Dataview-xAxis">
+  <div class="Content-Dataview-xAxis-Box"> */
 
 /* .Content-Dataview-Top:nth-child(even): {
    border: solid 2px black;
