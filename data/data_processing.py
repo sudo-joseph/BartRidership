@@ -35,11 +35,10 @@ months = {'Jan': '01-01',
           }
 
 stations = list(set(list(data.orig.unique()) + list(data.dest.unique())))
-
+output[year] = copy.deepcopy(months)
 for month in months:
 
-    output[year] = copy.deepcopy(months)
-    output[year][month] = {station: {'arriving':None, 'departing': None} for station in stations}
+    output[year][month] = {station: {'arriving': None, 'departing': None} for station in stations}
 
     # Generate weekday + weekend dataframes for current month
     start = pd.Timestamp('{}-{}'.format(year, months[month])).date()
