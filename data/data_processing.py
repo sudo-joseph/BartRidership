@@ -1,71 +1,87 @@
-"""Parse Bart Hourly Ridership Data and save to CSV."""
+"""Parse Bart Hourly Ridership Data and save to JSON."""
 import pandas as pd
 # import glob
 from datetime import datetime, timedelta
 from collections import OrderedDict
 
-colnames = ['date', 'hour', 'orig', 'dest', 'count']
-output_df = pd.DataFrame(columns=['year',
-                                  'station',
-                                  'hour',
-                                  'start',
-                                  'end',
-                                  ],
-                         index=range(24),
-                         )
-# index is number of stations times number of hours in day times number of
-# years with data.
+#BuisnessDay Calculation from here https://stackoverflow.com/a/33480745/12000941
+from pandas.tseries.holiday import USFederalHolidayCalendar
+from pandas.tseries.offsets import CustomBusinessDay
+import pprint
+import copy
+import json
+import math
 
-# output = []
-# count = 0
+us_bd = CustomBusinessDay(calendar=USFederalHolidayCalendar())
+colnames = ['date', 'hour', 'orig', 'dest', 'count']
+output = {}
 # for file in glob.glob('data/*'):
 #     print('Processesing file: {} ...'.format(file))
-#     data = pd.read_csv(file, names=colnames)
-#     for station in set(list(data.orig.unique()) + list(data.dest.unique())):
-#         for hour in range(0, 24):
-#             orig_station_df = data.loc[(data['orig'] == station)
-#                                        & (data['hour'] == hour)]
-#             dest_station_df = data.loc[(data['dest'] == station)
-#                                        & (data['hour'] == hour)]
-#             output_df.loc[count].year = file[-11:-7]
-#             output_df.loc[count].station = station
-#             output_df.loc[count].hour = hour
-#             output_df.loc[count].start = orig_station_df['count'].sum()
-#             output_df.loc[count].end = dest_station_df['count'].sum()
-#             output_df.loc[count].total = orig_station_df['count'].sum() \
-#                + dest_station_df['count'].sum()
-#             count += 1
-#
-# print(output_df)
-
-count = 0
-data = pd.read_csv('data/date-hour-soo-dest-2019.csv.gz', names=colnames)
+print('Loading Data...')
+data = pd.read_csv('data/raw/date-hour-soo-dest-2019.csv.gz', names=colnames)
+data['date'] = pd.to_datetime(data['date'])
 data.set_index(['date'])
-station = 'EMBR'
-day = '2019-12-02'
-# for station in set(list(data.orig.unique()) + list(data.dest.unique())):
+
+year = '2019'
+months = {'Jan': '01-01',
+          'Feb': '02-01',
+          'Mar': '03-01',
+          'Apr': '04-01',
+          'May': '05-01',
+          'Jun': '06-01',
+          'Jul': '07-01',
+          'Aug': '08-01',
+          'Sep': '09-01',
+          'Oct': '10-01',
+          'Nov': '11-01',
+          'Dec': '12-01',
+          }
+
+stations = list(set(list(data.orig.unique()) + list(data.dest.unique())))
+
+for month in months:
+
+    output[year] = copy.deepcopy(months)
+    output[year][month] = {station: {'arriving':None, 'departing': None} for station in stations}
+
+    #Generate weekday + weekend dataframes for current month
+    start = pd.Timestamp('{}-{}'.format(year, months[month])).date()
+    end = (pd.Timestamp('{}-{}'.format(year, months[month])) + pd.offsets.MonthEnd(0)).date()
+    daysOfMonth = pd.date_range(start,end,freq='D')
+    weekdays = pd.bdate_range(start,end,freq=us_bd)
+    data_weekday = data.loc[data['date'].isin(weekdays)]
+    data_weekend = data.loc[(~data['date'].isin(weekdays)) & data['date'].isin(daysOfMonth)]
+
+    for station in stations:
+
+        wd_average_arival_hourly, wd_average_depart_hourly = [], []
+        we_average_arival_hourly, we_average_depart_hourly = [], []
+        for hour in range(0, 24):
+
+            wd_orig_station_df = data_weekday.loc[(data_weekday['orig'] == station)
+                                            & (data_weekday['hour'] == hour)]
+            wd_dest_station_df = data_weekday.loc[(data_weekday['dest'] == station)
+                                            & (data_weekday['hour'] == hour)]
+            weekday_average_arrival = wd_dest_station_df['count'].sum()
+            weekday_average_depature = wd_orig_station_df['count'].sum()
+            wd_average_arival_hourly.append(weekday_average_arrival)
+            wd_average_depart_hourly.append(weekday_average_depature)
 
 
-# dates = ["2014-10-10", "2016-01-07"]
-# start, end = [datetime.strptime(_, "%Y-%m-%d") for _ in dates]
-# OrderedDict(((start + timedelta(_)).strftime(r"%b-%y"), None) for _ in xrange((end - start).days)).keys()
+            we_orig_station_df = data_weekday.loc[(data_weekday['orig'] == station)
+                                            & (data_weekday['hour'] == hour)]
+            we_dest_station_df = data_weekday.loc[(data_weekday['dest'] == station)
+                                            & (data_weekday['hour'] == hour)]
 
-# pd.date_range('2019-12-01', '2019-12-31', freq='D').strftime("%Y-%m-%d").tolist()
-# data.loc[data.date.between('2019-12-01', '2019-12-31')]
-#
+            we_average_arival_hourly.append(we_dest_station_df['count'].sum())
+            we_average_depart_hourly.append(we_orig_station_df['count'].sum())
+            print('Calculating Year: {}, Month: {}, Station: {}, Hour: {}'.format(year,month,station,hour))
 
-for hour in range(0, 24):
-    orig_station_df = data.loc[(data['orig'] == station)
-                               & (data['hour'] == hour)
-                               & (data['date'] == day)]
-    dest_station_df = data.loc[(data['dest'] == station)
-                               & (data['hour'] == hour)
-                               & (data['date'] == day)]
-    output_df.loc[count].year = 2019
-    output_df.loc[count].station = station
-    output_df.loc[count].hour = hour
-    output_df.loc[count].start = orig_station_df['count'].sum()
-    output_df.loc[count].end = dest_station_df['count'].sum()
-    print(output_df.loc[count])
-    count += 1
-print(output_df)
+        output[year][month][station]['arriving'] = {'weekday': wd_average_arival_hourly,
+                                                    'weekend': we_average_arival_hourly}
+        output[year][month][station]['departing'] = {'weekday': wd_average_depart_hourly,
+                                                    'weekend': we_average_depart_hourly}
+    break
+
+with open('data/ridership_data.json', 'w') as outfile:
+    json.dump(output, outfile)
