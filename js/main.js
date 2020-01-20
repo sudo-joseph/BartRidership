@@ -65,11 +65,10 @@ let data = {
 init();
 
 function init() {
-  fetchData();
   addMonths();
   addStation();
   addListeners();
-  getGraphData()
+  fetchData();
 }
 
 function fetchData() {
@@ -77,6 +76,7 @@ function fetchData() {
   .then(response => response.json())
   .then(json_data => {
     data.ridership_data=json_data;
+    getGraphData()
   })
 }
 
@@ -110,37 +110,44 @@ function addListeners() {
 }
 
 function getGraphData() {
-  let station = document.querySelector(".Content-Dataview-Controls-Station");
-  data.station = stations[station.value];
-  let year = document.querySelector(".Content-Dataview-Controls-Year");
-  let month = document.querySelector(".Content-Dataview-Controls-Month");
-  let dayofWeek = document.querySelector(".Content-Dataview-Controls-DayofWeek");
-  console.log('something')
-  console.log(data.ridership_data)
+  let station = document.querySelector(".Content-Dataview-Controls-Station").value;
+  data.station = stations[station];
+  let year = document.querySelector(".Content-Dataview-Controls-Year").value;
+  let month = document.querySelector(".Content-Dataview-Controls-Month").value;
+  let dayofWeek = document.querySelector(".Content-Dataview-Controls-DayofWeek").value;
+  let scaleFactor = 200/100000;
+  //200px = 100000 riders. Need to update once switch to average daily ridership.
+  let arriving = data.ridership_data[year][month][station]['arriving'][dayofWeek];
+  let departing = data.ridership_data[year][month][station]['departing'][dayofWeek]
 
-  data.arrival_data = []
-  data.depart_data = []
+  data.arrival_data = arriving.map(x => Math.round(x*scaleFactor));
+  data.depart_data = departing.map(x => Math.round(x*scaleFactor));
   render()
 }
 
 function render() {
-  let arrival = document.querySelector(".Content-Dataview-Top")
-  let depart = document.querySelector(".Content-Dataview-Bottom")
-  let title = document.querySelector(".Content-Title")
-  // for (hour of data.arrival_data) {
-  //   let div = document.createElement("div");
-  //   div.className += 'Content-Dataview-Data-Box';
-  //   div.style.setProperty('height', hour + 'px')
-  //   arrival.appendChild(div)
-  // }
-  // for (hour of data.depart_data) {
-  //   let div = document.createElement("div");
-  //   div.className += 'Content-Dataview-Data-Box';
-  //   div.style.setProperty('height', hour + 'px')
-  //   depart.appendChild(div)
-  // }
+  let title = document.querySelector(".Content-Title");
   title.innerHTML = `<h3> ${data.station} Station Arriving and Departing Passengers</h3>
-                       <h4> (Total arrivals per hour)</h4>`
+                       <h4> (Total arrivals per hour)</h4>`;
+
+  let arrival = document.querySelector(".Content-Dataview-Top");
+  arrival.innerHTML = '';
+  for (hour of data.arrival_data) {
+    let div = document.createElement("div");
+    div.className += 'Content-Dataview-Data-Box';
+    div.style.setProperty('height', hour + 'px');
+    arrival.appendChild(div);
+  };
+
+  let depart = document.querySelector(".Content-Dataview-Bottom");
+  depart.innerHTML = '';
+  for (hour of data.depart_data) {
+    let div = document.createElement("div");
+    div.className += 'Content-Dataview-Data-Box';
+    div.style.setProperty('height', hour + 'px');
+    depart.appendChild(div);
+  };
+
 }
 
 
