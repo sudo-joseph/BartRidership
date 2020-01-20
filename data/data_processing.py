@@ -70,13 +70,13 @@ for month in months:
             wd_average_depart_hourly.append(int(weekday_average_depature))
 
 
-            we_orig_station_df = data_weekday.loc[
-                                            (data_weekday['orig'] == station)
-                                            & (data_weekday['hour'] == hour)
+            we_orig_station_df = data_weekend.loc[
+                                            (data_weekend['orig'] == station)
+                                            & (data_weekend['hour'] == hour)
                                             ]
-            we_dest_station_df = data_weekday.loc[
-                                            (data_weekday['dest'] == station)
-                                            & (data_weekday['hour'] == hour)
+            we_dest_station_df = data_weekend.loc[
+                                            (data_weekend['dest'] == station)
+                                            & (data_weekend['hour'] == hour)
                                             ]
 
             we_average_arival_hourly.append(
