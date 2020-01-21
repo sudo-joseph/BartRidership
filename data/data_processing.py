@@ -66,10 +66,10 @@ for month in months:
 
     for station in stations:
 
-        wd_average_arival_hourly, wd_average_depart_hourly = [], []
-        we_average_arival_hourly, we_average_depart_hourly = [], []
+        wd_avg_arival_hourly, wd_avg_depart_hourly = [], []
+        we_avg_arival_hourly, we_avg_depart_hourly = [], []
         for hour in range(0, 24):
-            # weekday average hourly arrival and depature:
+            # weekday avg hourly arrival and depature:
             wd_depature_station_df = depature_data_weekday.loc[
                                             (depature_data_weekday['orig'] == station)
                                             & (depature_data_weekday['hour'] == hour)
@@ -78,10 +78,15 @@ for month in months:
                                             (arrival_data_weekday['dest'] == station)
                                             & (arrival_data_weekday['hour'] == hour)
                                             ]
-            weekday_average_arrival = wd_arrival_station_df['count'].mean()
-            weekday_average_depature = wd_depature_station_df['count'].mean()
-            wd_average_arival_hourly.append(int(weekday_average_arrival))
-            wd_average_depart_hourly.append(int(weekday_average_depature))
+            wd_avg_arrival = wd_arrival_station_df['count'].mean()
+
+            if pd.isna(wd_avg_arrival) or pd.isnull(wd_avg_arrival):
+                wd_avg_arrival = 0
+            wd_avg_depart = wd_depature_station_df['count'].mean()
+            if pd.isna(wd_avg_depart) or pd.isnull(wd_avg_depart):
+                wd_avg_depart = 0
+            wd_avg_arival_hourly.append(int(wd_avg_arrival))
+            wd_avg_depart_hourly.append(int(wd_avg_depart))
 
             we_depature_station_df = depature_data_weekend.loc[
                                             (depature_data_weekend['orig'] == station)
@@ -92,16 +97,23 @@ for month in months:
                                             & (arrival_data_weekend['hour'] == hour)
                                             ]
 
-            we_average_arival_hourly.append(
-                                    int(we_arrival_station_df['count'].mean()))
-            we_average_depart_hourly.append(
-                                    int(we_depature_station_df['count'].mean()))
-            print('Calculating Year: {}, Month: {}, Station: {}, Hour: {}'.format(year,month,station,hour))
+            we_avg_arrival = we_arrival_station_df['count'].mean()
+            if pd.isna(we_avg_arrival) or pd.isnull(we_avg_arrival):
+                we_avg_arrival = 0
+            we_avg_depart = we_depature_station_df['count'].mean()
+            if pd.isna(we_avg_depart) or pd.isnull(we_avg_depart):
+                we_avg_depart = 0
+            we_avg_arival_hourly.append(int(we_avg_arrival))
+            we_avg_depart_hourly.append(int(we_avg_depart))
 
-        output[year][month][station]['arriving'] = {'weekday': wd_average_arival_hourly,
-                                                    'weekend': we_average_arival_hourly}
-        output[year][month][station]['departing'] = {'weekday': wd_average_depart_hourly,
-                                                    'weekend': we_average_depart_hourly}
+        print('Calculating Year: {}, Month: {}, Station: {}'.format(year,
+                                                                    month,
+                                                                    station))
+
+        output[year][month][station]['arriving'] = {'weekday': wd_avg_arival_hourly,
+                                                    'weekend': we_avg_arival_hourly}
+        output[year][month][station]['departing'] = {'weekday': wd_avg_depart_hourly,
+                                                    'weekend': we_avg_depart_hourly}
 
 
 with open('data/ridership_data.json', 'w') as outfile:
