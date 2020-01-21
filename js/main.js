@@ -1,7 +1,9 @@
-let years = ["2019"];
+//// TODO: Extract year and month data from json.
+let years = ["2019","2018","2017","2016","2015","2014",
+             "2015","2014","2013","2012","2011"];
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-];
+              "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+             ];
 
 let stations = {
   "12TH": "12th Street / Oakland City Center",
@@ -57,14 +59,15 @@ let stations = {
 
 let data = {
     "ridership_data": {},
-    "arrival_data": [1173, 19, 0, 0, 0, 4579, 17649, 43350, 60828, 37016, 14102, 9107, 8734, 8207, 8442, 9884, 14301, 22133, 18904, 11124, 6956, 5003, 4668, 2209],
-    "depart_data": [617, 165, 0, 0, 2, 1127, 4539, 11820, 20924, 18142, 10802, 9045, 10347, 10063, 11276, 19119, 39175, 65068, 39093, 15905, 6551, 4026, 2955, 1716],
-    "station": stations['12TH']};
+    "arrival_data":[],
+    "depart_data":[],
+    "station": ''};
 //update with empty values after render function is working.
 
 init();
 
 function init() {
+  addYears()
   addMonths();
   addStation();
   addListeners();
@@ -76,9 +79,19 @@ function fetchData() {
   .then(response => response.json())
   .then(json_data => {
     data.ridership_data=json_data;
-    console.log(json_data)
     getGraphData()
   })
+}
+
+function addYears() {
+  let dropdown = document.querySelector(".Content-Dataview-Controls-Year");
+  for (year of years) {
+    let option = document.createElement("option");
+    option.value = year;
+    option.textContent = year;
+    option.className += 'Content-Dataview-Controls-Option';
+    dropdown.appendChild(option);
+  }
 }
 
 function addMonths() {
@@ -148,7 +161,6 @@ function render() {
     div.style.setProperty('height', hour + 'px');
     depart.appendChild(div);
   };
-
 }
 
 
