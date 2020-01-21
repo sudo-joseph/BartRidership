@@ -76,6 +76,7 @@ function fetchData() {
   .then(response => response.json())
   .then(json_data => {
     data.ridership_data=json_data;
+    console.log(json_data)
     getGraphData()
   })
 }
@@ -115,7 +116,7 @@ function getGraphData() {
   let year = document.querySelector(".Content-Dataview-Controls-Year").value;
   let month = document.querySelector(".Content-Dataview-Controls-Month").value;
   let dayofWeek = document.querySelector(".Content-Dataview-Controls-DayofWeek").value;
-  let scaleFactor = 200/100000;
+  let scaleFactor = 200/15000;
   //200px = 100000 riders. Need to update once switch to average daily ridership.
   let arriving = data.ridership_data[year][month][station]['arriving'][dayofWeek];
   let departing = data.ridership_data[year][month][station]['departing'][dayofWeek]
@@ -128,7 +129,7 @@ function getGraphData() {
 function render() {
   let title = document.querySelector(".Content-Title");
   title.innerHTML = `<h3> ${data.station} Station Arriving and Departing Passengers</h3>
-                       <h4> (Total arrivals per hour)</h4>`;
+                       <h4> (Average Monthly Pax per Hour)</h4>`;
 
   let arrival = document.querySelector(".Content-Dataview-Top");
   arrival.innerHTML = '';
