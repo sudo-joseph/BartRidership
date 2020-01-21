@@ -19,6 +19,15 @@ data = pd.read_csv('data/raw/date-hour-soo-dest-2019.csv.gz', names=colnames)
 data['date'] = pd.to_datetime(data['date'])
 data.set_index(['date'])
 
+# Aggregate rows by day:
+# https://stackoverflow.com/questions/48772271/merging-rows-and-summing-values-by-date-in-python
+arrival_data = data.groupby(['date', 'hour', 'dest'],
+                            as_index=False,
+                            ).agg({'count': 'sum'})
+depature_data = data.groupby(['date', 'hour', 'orig'],
+                             as_index=False,
+                             ).agg({'count': 'sum'})
+
 year = '2019'
 months = {'Jan': '01-01',
           'Feb': '02-01',
@@ -36,9 +45,11 @@ months = {'Jan': '01-01',
 
 stations = list(set(list(data.orig.unique()) + list(data.dest.unique())))
 output[year] = copy.deepcopy(months)
+
 for month in months:
 
-    output[year][month] = {station: {'arriving': None, 'departing': None} for station in stations}
+    output[year][month] = {stn: {'arriving': None,
+                                 'departing': None} for stn in stations}
 
     # Generate weekday + weekend dataframes for current month
     start = pd.Timestamp('{}-{}'.format(year, months[month])).date()
@@ -46,43 +57,45 @@ for month in months:
            + pd.offsets.MonthEnd(0)).date()
     daysOfMonth = pd.date_range(start, end, freq='D')
     weekdays = pd.bdate_range(start, end, freq=us_bd)
-    data_weekday = data.loc[data['date'].isin(weekdays)]
-    data_weekend = data.loc[(~data['date'].isin(weekdays))
-                            & data['date'].isin(daysOfMonth)]
+    arrival_data_weekday = arrival_data.loc[arrival_data['date'].isin(weekdays)]
+    arrival_data_weekend = arrival_data.loc[(~arrival_data['date'].isin(weekdays))
+                                            & arrival_data['date'].isin(daysOfMonth)]
+    depature_data_weekday = depature_data.loc[depature_data['date'].isin(weekdays)]
+    depature_data_weekend = depature_data.loc[(~depature_data['date'].isin(weekdays))
+                                               & depature_data['date'].isin(daysOfMonth)]
 
     for station in stations:
 
         wd_average_arival_hourly, wd_average_depart_hourly = [], []
         we_average_arival_hourly, we_average_depart_hourly = [], []
         for hour in range(0, 24):
-
-            wd_orig_station_df = data_weekday.loc[
-                                            (data_weekday['orig'] == station)
-                                            & (data_weekday['hour'] == hour)
+            # weekday average hourly arrival and depature:
+            wd_depature_station_df = depature_data_weekday.loc[
+                                            (depature_data_weekday['orig'] == station)
+                                            & (depature_data_weekday['hour'] == hour)
                                             ]
-            wd_dest_station_df = data_weekday.loc[
-                                            (data_weekday['dest'] == station)
-                                            & (data_weekday['hour'] == hour)
+            wd_arrival_station_df = arrival_data_weekday.loc[
+                                            (arrival_data_weekday['dest'] == station)
+                                            & (arrival_data_weekday['hour'] == hour)
                                             ]
-            weekday_average_arrival = wd_dest_station_df['count'].sum()
-            weekday_average_depature = wd_orig_station_df['count'].sum()
+            weekday_average_arrival = wd_arrival_station_df['count'].mean()
+            weekday_average_depature = wd_depature_station_df['count'].mean()
             wd_average_arival_hourly.append(int(weekday_average_arrival))
             wd_average_depart_hourly.append(int(weekday_average_depature))
 
-
-            we_orig_station_df = data_weekend.loc[
-                                            (data_weekend['orig'] == station)
-                                            & (data_weekend['hour'] == hour)
+            we_depature_station_df = depature_data_weekend.loc[
+                                            (depature_data_weekend['orig'] == station)
+                                            & (depature_data_weekend['hour'] == hour)
                                             ]
-            we_dest_station_df = data_weekend.loc[
-                                            (data_weekend['dest'] == station)
-                                            & (data_weekend['hour'] == hour)
+            we_arrival_station_df = arrival_data_weekend.loc[
+                                            (arrival_data_weekend['dest'] == station)
+                                            & (arrival_data_weekend['hour'] == hour)
                                             ]
 
             we_average_arival_hourly.append(
-                                    int(we_dest_station_df['count'].sum()))
+                                    int(we_arrival_station_df['count'].mean()))
             we_average_depart_hourly.append(
-                                    int(we_orig_station_df['count'].sum()))
+                                    int(we_depature_station_df['count'].mean()))
             print('Calculating Year: {}, Month: {}, Station: {}, Hour: {}'.format(year,month,station,hour))
 
         output[year][month][station]['arriving'] = {'weekday': wd_average_arival_hourly,
