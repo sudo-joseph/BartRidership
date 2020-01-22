@@ -64,6 +64,8 @@ let data = {
     "station": ''};
 //update with empty values after render function is working.
 
+let scaleFactor = 200/15000;
+
 init();
 
 function init() {
@@ -129,8 +131,7 @@ function getGraphData() {
   let year = document.querySelector(".Content-Dataview-Controls-Year").value;
   let month = document.querySelector(".Content-Dataview-Controls-Month").value;
   let dayofWeek = document.querySelector(".Content-Dataview-Controls-DayofWeek").value;
-  let scaleFactor = 200/15000;
-  //200px = 100000 riders. Need to update once switch to average daily ridership.
+    //200px = 100000 riders. Need to update once switch to average daily ridership.
   let arriving = data.ridership_data[year][month][station]['arriving'][dayofWeek];
   let departing = data.ridership_data[year][month][station]['departing'][dayofWeek]
 
@@ -150,6 +151,7 @@ function render() {
     let div = document.createElement("div");
     div.className += 'Content-Dataview-Data-Box';
     div.style.setProperty('height', hour + 'px');
+    div.textContent = Math.round(hour/scaleFactor);
     arrival.appendChild(div);
   };
 
@@ -159,6 +161,7 @@ function render() {
     let div = document.createElement("div");
     div.className += 'Content-Dataview-Data-Box';
     div.style.setProperty('height', hour + 'px');
+    div.textContent = Math.round(hour/scaleFactor);
     depart.appendChild(div);
   };
 }

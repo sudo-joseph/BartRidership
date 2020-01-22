@@ -94,19 +94,26 @@
 .Content-Dataview-Data-Box {
   width: var(--column-width);
   align-items: flex-end;
-  height: 200px transition:2s;
+  height: 200px;
+  transition:2s;
+  font-size: 20%;
+  text-align: center;
 }
 
 .Content-Dataview-Data-Box:nth-child(odd) {
   background-color: var(--main-color-1);
+  color:  var(--main-color-1);
 }
 
 .Content-Dataview-Data-Box:nth-child(even) {
   background-color: var(--main-color-2);
+  color:  var(--main-color-2);
 }
 
 .Content-Dataview-Data-Box:hover {
   background-color: yellow;
+  font-size:80%;
+  color:black;
 }
 
 .Content-Dataview-xAxis {
@@ -115,6 +122,7 @@
   flex-wrap: nowrap;
   height: 20px;
 
+
   /* align-items: flex-start; */
   align-content: stretch;
 }
@@ -122,6 +130,7 @@
 .Content-Dataview-xAxis-Box {
   width: calc(var(--column-width)/2);
   text-align: center;
+  padding: 2px 0px 2px 0px;
 }
 
 .Content-Dataview-yAxis {
